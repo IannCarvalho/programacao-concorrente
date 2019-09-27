@@ -3,56 +3,46 @@ package concorrente;
 import java.util.ArrayList;
 import java.util.concurrent.locks.LockSupport;
 
-public class FIFOMutex implements Runnable {
-	private boolean locked;
+public class Questao01 implements Runnable {
 	private final ArrayList<Thread> waiters = new ArrayList<Thread>();
-
-	public FIFOMutex() {
-		this.locked = false;
-	}
 
 	public void lock() {
 		boolean wasInterrupted = false;
+		Thread current = Thread.currentThread();
+		
 		synchronized (this) {
-			Thread current = Thread.currentThread();
 			waiters.add(current);
-			
-			while (peek() != current) {
-				LockSupport.park(this);
-				if (Thread.interrupted())
-					wasInterrupted = true;
-			}
-			
-			remove();			
-			
-			if (wasInterrupted)
-				current.interrupt();
 		}
+
+		while (peek() != current) {
+			LockSupport.park(this);
+			if (Thread.interrupted())
+				wasInterrupted = true;
+		}
+
+		if (wasInterrupted)
+			current.interrupt();
+
 	}
 
 	public void unlock() {
-		locked = false;
-		if (!isEmpty())
+
+		synchronized (this) {
+			if (isNotEmpty())
+				waiters.remove(0);
+		}
+
+		if (isNotEmpty())
 			LockSupport.unpark(peek());
+
 	}
 
 	public Thread peek() {
 		return waiters.get(0);
 	}
 
-	public boolean isEmpty() {
+	public boolean isNotEmpty() {
 		return waiters.size() > 0;
-	}
-
-	public void remove() {
-		if (!isEmpty())
-			waiters.remove(0);
-	}
-
-	public boolean compareAndSet() {
-		boolean initial = locked;
-		locked = true;
-		return initial;
 	}
 
 	@Override
@@ -62,7 +52,7 @@ public class FIFOMutex implements Runnable {
 		try {
 			for (int i = 0; i < 3; i++) {
 				System.out.println("Thread " + current.getId() + " executando");
-				Thread.sleep(1000);
+				Thread.sleep(1);
 			}
 		} catch (InterruptedException e) {
 			System.out.println(current.getId() + "interrompida");
