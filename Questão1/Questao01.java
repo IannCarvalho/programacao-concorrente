@@ -51,13 +51,13 @@ public class Questao01 implements Runnable {
 		Thread current = Thread.currentThread();
 		try {
 			for (int i = 0; i < 3; i++) {
-				System.out.println("Thread " + current.getId() + " executando");
+				System.out.println("Thread " + current.getName() + " executando");
 				Thread.sleep(1);
 			}
 		} catch (InterruptedException e) {
-			System.out.println(current.getId() + "interrompida");
+			System.out.println(current.getName() + "interrompida");
 		}
-		System.out.println("Thread " + current.getId() + " terminando");
+		System.out.println("Thread " + current.getName() + " terminando");
 		unlock();
 	}
 
