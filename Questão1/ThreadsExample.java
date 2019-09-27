@@ -6,17 +6,15 @@ import concorrente.MyThread;
 
 class ThreadsExample {
 	public static void main(String[] args) {
-		MyThread t1 = new MyThread("1");
-		MyThread t2 = new MyThread("2");
-		MyThread t3 = new MyThread("3");
-
 		ArrayList<MyThread> array = new ArrayList<MyThread>();
-		array.add(t1);
-		array.add(t2);
-		array.add(t3);
+		LockObject globalLock = new LockObject();
 		
-		for(MyThread myThread : array) {
-			myThread.runThread();
-			}
+		for(int i = 1; i<= 10; i++) {
+			array.add(new MyThread(Integer.toString(i), globalLock));
 		}
+
+		for (MyThread myThread : array) {
+			myThread.runThread();
+		}
+	}
 }
