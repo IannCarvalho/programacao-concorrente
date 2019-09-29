@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "first.C": "cpp",
+        "process.C": "cpp",
+        "thread.C": "cpp",
+        "Thread.C": "cpp",
+        "Process.C": "cpp"
+    }
+}

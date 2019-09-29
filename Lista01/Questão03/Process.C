@@ -5,15 +5,13 @@
 
 int main()
 {
-    printf("sou o pai de todos %d", getpid());
     for (int i = 0; i < 3; i++)
     {
         if (fork() == 0)
         {
-            printf("[son] pid %d from [parent] pid %d\n", getpid(), getppid());
+            printf("Sou um processo de pid %d, Meu pai é um processo de pid %d\n", getpid(), getppid());
             exit(0);
         }
-        printf("[son] pid %d from [parent] pid %d\n", getpid(), getppid());
     }
 
     for (int i = 0; i < 3; i++)
