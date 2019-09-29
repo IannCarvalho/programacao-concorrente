@@ -2,8 +2,8 @@
 
 ### Integrantes
 
- * Iann Carvalho  - https://github.com/ianncarvalho
- * Júlio Barreto  - https://github.com/juliobguedes
+ * [Iann Carvalho](https://github.com/ianncarvalho)
+ * [Júlio Barreto](https://github.com/juliobguedes)
  
 ## Lista 1
 
