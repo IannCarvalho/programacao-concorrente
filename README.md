@@ -2,8 +2,8 @@
 
 ### Integrantes
 
- * Iann Carvalho  - https://github.com/avdluna
- * Júlio Barreto  - https://github.com/amintasvrp
+ * Iann Carvalho  - https://github.com/ianncarvalho
+ * Júlio Barreto  - https://github.com/juliobguedes
  
 ## Lista 1
 
