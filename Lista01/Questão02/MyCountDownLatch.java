@@ -5,7 +5,7 @@ public class MyCountDownLatch {
 		this.count = count;
 	}
 
-	public synchronized boolean isEmpty() {
+	private synchronized boolean isEmpty() {
 		return this.count < 1;
 	}
 
