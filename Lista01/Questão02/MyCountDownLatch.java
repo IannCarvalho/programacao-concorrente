@@ -1,5 +1,3 @@
-package questao2;
-
 public class MyCountDownLatch {
 	private int count;
 

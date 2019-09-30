@@ -1,5 +1,3 @@
-package concorrente;
-
 import java.util.ArrayList;
 import java.util.concurrent.locks.LockSupport;
 
