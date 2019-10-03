@@ -12,3 +12,5 @@
 #### [Questão 2](./Lista01/Questão02).
 
 #### [Questão 3](./Lista01/Questão03).
+
+#### [Questão 4](./Lista01/Questão04).
