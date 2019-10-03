@@ -1,32 +1,43 @@
-#define _DEFAULT_SOURCE
-
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <sys/time.h>
 
-int main()
-{
-    FILE *file;
-    file = fopen("logProcess.csv", "w");
-    struct timeval start, end;
+#define _DEFAULT_SOURCE
+#define N 100
 
-    for (int i = 0; i < 3; i++)
-    {
+int main() {
+    struct timeval start, end;
+    timeval starts[N] = {};
+    timeval ends[N] = {};
+    int pids[N] = {};
+
+    for (int i = 0; i < N; i++) {
         gettimeofday(&start, NULL);
-        if (fork() == 0)
-        {
+        int res = fork();
+        if (res == 0) {
             gettimeofday(&end, NULL);
-        	long seconds = (end.tv_sec - start.tv_sec);
-        	long micros = ((seconds * 1000000) + end.tv_usec) - (start.tv_usec);
-            fprintf(file,"%d,%d,%d,%d\n", getpid(), getppid(),seconds,micros);
+            printf("%d\n", end.tv_usec);
+            ends[i] = end;
             exit(0);
+        } else {
+            starts[i] = start;
+            pids[i] = res;
         }
     }
 
-    for (int i = 0; i < 3; i++)
-        wait(NULL);
+    while (wait(NULL) != -1);
+
+    FILE *file;
+    file = fopen("logProcess.csv", "w");
+    fprintf(file, "PID,start,end\n");
+
+    for (int i = 0; i < N; i++) {
+        long start_micro = starts[i].tv_usec;
+        long end_micro = ends[i].tv_usec;
+        fprintf(file, "%d,%ld,%ld\n", pids[i], start_micro, end_micro);
+    }
 
     fclose(file);
 }
