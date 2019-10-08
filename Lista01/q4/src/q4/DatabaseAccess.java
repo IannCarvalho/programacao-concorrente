@@ -5,11 +5,7 @@ import java.util.Map;
 
 public class DatabaseAccess {
 	
-	private String filename;
-	
-	public DatabaseAccess(String filename) {
-		this.filename = filename;
-	}
+	private String FILENAME = "";
 	
 	public synchronized void updateDatabase(Map<Integer, Integer> entries) {
 		

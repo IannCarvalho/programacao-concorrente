@@ -12,9 +12,9 @@ public class MyHashMap {
 	
 	private int maxSize;
 	
-	private int currentSize;
+	private volatile int currentSize;
 	
-	private Calendar start;
+	private volatile Calendar start;
 	
 	private int timeout;
 	
@@ -30,7 +30,7 @@ public class MyHashMap {
 		this.maxSize = maxSize;
 		this.timeout = timeout;
 		this.cache = new HashMap<Integer, Integer>();
-		this.dbAccess = new DatabaseAccess("");
+		this.dbAccess = new DatabaseAccess();
 		this.start = Calendar.getInstance();
 		this.keys = new HashSet<Integer>();
 	}
@@ -97,6 +97,8 @@ public class MyHashMap {
 		if (this.currentSize >= this.maxSize ||
 				 nowMilliseconds >= startMilliseconds + (timeout * 1000))
 			this.dbAccess.updateDatabase(cache);
+			this.start = Calendar.getInstance();
+			this.currentSize = 0;
 	}
 
 }
