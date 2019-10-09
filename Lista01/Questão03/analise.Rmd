@@ -107,6 +107,13 @@ final
 ```
 
 ```{r}
-ggplot(data=final, aes(x=number, y=time), color = type) +
+ggplotly(
+ggplot(data=final, aes(x=number, y=time, color = type)) +
   geom_line()
+)
+
+ggplotly(
+ggplot(data=final, aes(x=number, y=cumulative, color = type)) +
+  geom_line()
+)
 ```
