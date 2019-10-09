@@ -1,0 +1,39 @@
+```{r}
+library(tidyverse)
+library(dplyr)
+library(plotly)
+
+start = read.csv(("start.csv"), header=FALSE)
+colnames(start) <- c("PID","sequence","start")
+
+end = read.csv(("end.csv"), header=FALSE)
+colnames(end) <- c("PID","sequence","end")
+
+time = merge(start, end, by=c("PID", "sequence")) %>%
+  mutate(time = end-start) %>% 
+  select(c("PID","sequence","time"))
+
+his = ggplot(data=time, aes(x=time)) +
+  geom_histogram()
+
+ggplotly(his)
+
+time = time %>%
+  filter(time < 5000) %>%
+  mutate(threads = row_number())
+
+time = time %>% 
+   mutate(cumulative = cumsum(time))
+
+line = ggplot(data=time, aes(x=threads, y=time)) +
+  geom_line()+
+  geom_point()
+
+ggplotly(line)
+
+line2 = ggplot(data=time, aes(x=threads, y=cumulative)) +
+  geom_line()+
+  geom_point()
+
+ggplotly(line2)
+```

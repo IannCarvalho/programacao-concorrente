@@ -9,7 +9,8 @@
 int main() {
     for (int i = 0; i < N; i++) {
         if (fork() == 0) {
-            sleep(200);
+            sleep(20);
+            exit(0);
         }
     }
 

@@ -25,7 +25,6 @@ int main() {
         } else {
             starts[i] = start;
             pids[i] = res;
-            wait(NULL);
         }
     }
 

@@ -30,8 +30,6 @@ int main(int argc, char *argv[])
         pthread_join(pthreads[i], NULL);
         
         gettimeofday(&end, NULL);
-        long seconds = (end.tv_sec - start.tv_sec);
-        long micros = ((seconds * 1000000) + end.tv_usec) - (start.tv_usec);
-        fprintf(file,"%d,%d,%d\n", i+1,seconds,micros);
+        fprintf(file,"%d,%ld\n", i+1,(end.tv_usec) - (start.tv_usec));
     }
 }
