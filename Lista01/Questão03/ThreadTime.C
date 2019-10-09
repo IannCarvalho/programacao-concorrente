@@ -1,4 +1,5 @@
 #define _DEFAULT_SOURCE
+#define N 1000
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,13 +14,12 @@ void *run(void *args)
 
 int main(int argc, char *argv[])
 {
-    int i;
-    pthread_t pthreads[100];
+    pthread_t pthreads[N];
     FILE *file;
     file = fopen("logThread.csv", "w");
     struct timeval start, end;
 
-    for (i = 0; i < 100; i++)
+    for (int i = 0; i < N; i++)
     {
         int *arg = (int *) malloc(sizeof(int *));
         *arg = i + 1;
@@ -34,6 +34,4 @@ int main(int argc, char *argv[])
         long micros = ((seconds * 1000000) + end.tv_usec) - (start.tv_usec);
         fprintf(file,"%d,%d,%d\n", i+1,seconds,micros);
     }
-
-    return 0;
 }

@@ -1,43 +1,43 @@
+#define _DEFAULT_SOURCE
+#define N 1000
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <sys/time.h>
 
-#define _DEFAULT_SOURCE
-#define N 100
-
 int main() {
     struct timeval start, end;
     timeval starts[N] = {};
-    timeval ends[N] = {};
     int pids[N] = {};
+
+    FILE *endFile;
+    endFile = fopen("end.csv", "w");
 
     for (int i = 0; i < N; i++) {
         gettimeofday(&start, NULL);
         int res = fork();
         if (res == 0) {
             gettimeofday(&end, NULL);
-            printf("%d\n", end.tv_usec);
-            ends[i] = end;
+            fprintf(endFile,"%d,%d,%ld\n", getpid(),i+1,end.tv_usec);
             exit(0);
         } else {
             starts[i] = start;
             pids[i] = res;
+            wait(NULL);
         }
     }
 
     while (wait(NULL) != -1);
+    fclose(endFile);
 
-    FILE *file;
-    file = fopen("logProcess.csv", "w");
-    fprintf(file, "PID,start,end\n");
+    FILE *startFile;
+    startFile = fopen("start.csv", "w");
 
     for (int i = 0; i < N; i++) {
-        long start_micro = starts[i].tv_usec;
-        long end_micro = ends[i].tv_usec;
-        fprintf(file, "%d,%ld,%ld\n", pids[i], start_micro, end_micro);
+        fprintf(startFile, "%d,%d,%ld\n", pids[i],i+1,starts[i].tv_usec);
     }
 
-    fclose(file);
+    fclose(startFile);
 }
