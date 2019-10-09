@@ -2,38 +2,111 @@
 library(tidyverse)
 library(dplyr)
 library(plotly)
+```
 
+```{r}
 start = read.csv(("start.csv"), header=FALSE)
-colnames(start) <- c("PID","sequence","start")
+colnames(start) <- c("PID","original_number","start")
 
 end = read.csv(("end.csv"), header=FALSE)
-colnames(end) <- c("PID","sequence","end")
+colnames(end) <- c("PID","original_number","end")
 
-time = merge(start, end, by=c("PID", "sequence")) %>%
+time = merge(start, end, by=c("PID", "original_number")) %>%
   mutate(time = end-start) %>% 
-  select(c("PID","sequence","time"))
+  select(c("PID","original_number","time"))
 
-his = ggplot(data=time, aes(x=time)) +
-  geom_histogram()
+time
+```
 
-ggplotly(his)
+```{r}
+ggplotly(
+  ggplot(data=time, aes(x=original_number, y=time)) +
+    geom_line()
+  )
+```
 
+```{r}
 time = time %>%
   filter(time < 5000) %>%
-  mutate(threads = row_number())
+  mutate(number = row_number())
 
 time = time %>% 
    mutate(cumulative = cumsum(time))
 
-line = ggplot(data=time, aes(x=threads, y=time)) +
-  geom_line()+
-  geom_point()
+time
+```
 
-ggplotly(line)
+```{r}
+ggplotly(
+  ggplot(data=time, aes(x=number, y=time)) +
+    geom_line()
+  )
 
-line2 = ggplot(data=time, aes(x=threads, y=cumulative)) +
-  geom_line()+
-  geom_point()
+ggplotly(
+  ggplot(data=time, aes(x=number, y=cumulative)) +
+    geom_line()
+  )
+```
 
-ggplotly(line2)
+```{r}
+thread = read.csv(("logThread.csv"), header=FALSE)
+colnames(thread) <- c("original_number", "time")
+
+thread
+```
+
+```{r}
+ggplotly(
+  ggplot(data=thread, aes(x=original_number, y=time)) +
+    geom_line()
+)
+```
+
+```{r}
+thread = thread %>%
+  filter(time < 90) %>%
+  mutate(number = row_number())
+
+ggplotly(
+  ggplot(data=thread, aes(x=number, y=time)) +
+    geom_line()
+)
+```
+
+```{r}
+thread = thread %>% 
+   mutate(cumulative = cumsum(time))
+
+thread
+```
+
+```{r}
+ggplotly(
+  ggplot(data=thread, aes(x=number, y=time)) +
+    geom_line()
+  )
+
+ggplotly(
+  ggplot(data=thread, aes(x=number, y=cumulative)) +
+    geom_line()
+  )
+```
+
+```{r}
+thread = thread %>%
+  mutate(type = "thread")
+
+time = time %>%
+  mutate(type = "process")
+
+time$PID <- NULL
+
+final = rbind(thread, time)
+
+final
+```
+
+```{r}
+ggplot(data=final, aes(x=number, y=time), color = type) +
+  geom_line()
 ```
