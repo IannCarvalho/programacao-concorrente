@@ -9,16 +9,16 @@
 * Os códigos aqui se encontram para as soluções de threads para [memória](https://github.com/IannCarvalho/programacao-concorrente/blob/master/Lista01/Quest%C3%A3o03/ThreadMemory.C) e para [tempo](https://github.com/IannCarvalho/programacao-concorrente/blob/master/Lista01/Quest%C3%A3o03/ThreadTime.C)
 
 #### Por que as threads gastam menos tempo que processos?
-![Tempo1]()
+![Tempo1](https://imagizer.imageshack.com/img921/9671/Pr0JpP.png)
 
 Imagem 01 - Gráfico comparando o tempo de execução das threads e dos processos
 
 #### Por que as threads gastam menos recursos que processos?
 
-![Consumo1]()
+![Consumo1](https://imagizer.imageshack.com/img921/463/yR4soa.png)
 
 Imagem 02 - O consumo de memória de execução das threads
 
-![Consumo2]()
+![Consumo2](https://imagizer.imageshack.com/img924/5390/Z4coBN.png)
 
 Imagem 03 - O consumo de memória de execução dos processos
