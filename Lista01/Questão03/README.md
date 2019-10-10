@@ -2,6 +2,12 @@
 
 Threads, processos leves. Escreve dois programas em clang. O primeiro, cria N threads e em seguida, executa join para cada um delas. Cada thread deve simplesmente dormir por um tempo (alguns segundos), e em seguida executar thread_exit(0). Faça um segundo programa, equivalente ao anterior, que cria N processos, que dormem por um tempo determinado, e os esperar terminar. Avalie as diferenças de desempenho, tanto em tempo decorrido para executar as operações importantes), quanto no consumo de memória.
 
+## Como fazer build
+
+``` bash
+$ sh build.sh
+```
+
 ## Introdução teórica
 
 ### Como funcionam os processos?
