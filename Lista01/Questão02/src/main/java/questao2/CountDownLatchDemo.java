@@ -1,3 +1,5 @@
+package questao2;
+
 public class CountDownLatchDemo {
 	public static void main(String args[]) throws InterruptedException {
 		MyCountDownLatch latch = new MyCountDownLatch(10);
