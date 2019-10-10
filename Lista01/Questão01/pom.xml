@@ -19,6 +19,9 @@
             </plugin>
         </plugins>
     </build>
-
+    
+    <properties>
+        <exec.mainClass>questao1.ThreadsExample</exec.mainClass>
+    </properties>
 
 </project>
