@@ -10,24 +10,26 @@ public class Fifo implements Runnable {
 		synchronized (this) {
 			waiters.add(Thread.currentThread());
 		}
-		while (peek() != Thread.currentThread()) {
+		if (peek() != Thread.currentThread())
 			LockSupport.park(this);
-		}
-
 	}
 
+	// Verificacao dupla se o arraylist está vazio eh necessaria porque o elemento
+	// remove antes de fazer o unpark. Pode existir uma situacao em que ele tenta
+	// fazer um unpark em um elemento que nao existe
 	public void unlock() {
-		synchronized (waiters) {
+		synchronized (this) {
 			if (isNotEmpty())
 				waiters.remove(0);
+			if (isNotEmpty())
+				LockSupport.unpark(peek());
 		}
-		if (isNotEmpty())
-			LockSupport.unpark(peek());
-
 	}
 
 	public Thread peek() {
-		return waiters.get(0);
+		synchronized (this) {
+			return waiters.get(0);
+		}
 	}
 
 	public boolean isNotEmpty() {
