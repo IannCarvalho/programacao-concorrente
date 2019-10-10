@@ -86,7 +86,9 @@ public class CachedMapTest {
     }
 
     /**
-     *
+     * Testa o fluxo de adicionar um par chave-valor e, antes do timeout,
+     * remover o par inserido. Além disso, espera o timeout para certificar-se
+     * que o par não foi enviado ao banco depois de ser removido do cache.
      */
     @Test
     public void testAddOneAndRemoveIt() throws InterruptedException {
@@ -106,6 +108,11 @@ public class CachedMapTest {
         assertEquals(0, cache.size());
     }
 
+    /**
+     * Testa o fluxo de adicionar cinco pares chave-valor e, antes do timeout,
+     * remover os pares inseridos. Além disso, espera o timeout para certificar-se
+     * que o pares não foram enviados ao banco depois de serem removido do cache.
+     */
     @Test
     public void testAddBelowLimitWaitTimeoutAndRemove() throws InterruptedException {
         for (int i = 0; i < MAX_PAIRS; i++) {
@@ -129,6 +136,12 @@ public class CachedMapTest {
         assertTrue(cache.isCacheEmpty());
     }
 
+    /**
+     * Testa o fluxo de adicionar seis pares chave-valor, executando um
+     * flush para o banco, e, após o timeout, remover um dos pares
+     * inseridos, certificando-se que o par removido não foi adicionado
+     * ao cache e o par não está mais no disco
+     */
     @Test
     public void testAddLimitAndRemoveFromDisk() throws InterruptedException {
         for (int i = 0; i < MAX_PAIRS + 1; i++) {
