@@ -13,7 +13,7 @@ int main() {
     int pids[N] = {};
 
     FILE *endFile;
-    endFile = fopen("end.csv", "w");
+    endFile = fopen("../data/end.csv", "w");
 
     for (int i = 0; i < N; i++) {
         gettimeofday(&start, NULL);
@@ -32,7 +32,7 @@ int main() {
     fclose(endFile);
 
     FILE *startFile;
-    startFile = fopen("start.csv", "w");
+    startFile = fopen("../data/start.csv", "w");
 
     for (int i = 0; i < N; i++) {
         fprintf(startFile, "%d,%d,%ld\n", pids[i],i+1,starts[i].tv_usec);

@@ -14,7 +14,7 @@ void *run(void *args) {
 int main() {
     pthread_t pthreads[N];
     FILE *file;
-    file = fopen("logThread.csv", "w");
+    file = fopen("../data/logThread.csv", "w");
     struct timeval start, end;
 
     for (int i = 0; i < N; i++) {
