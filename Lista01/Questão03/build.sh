@@ -1,5 +1,5 @@
 mkdir bin
-gcc -o ./bin/ProcessMemory.out ./code/ProcessMemory.C
-gcc -o ./bin/ProcessTime.out ./code/ProcessTime.C
-gcc -lpthread -o ./bin/ThreadMemory.out ./code/ThreadMemory.C
-gcc -lpthread -o ./bin/ThreadTime.out ./code/ThreadTime.C
+gcc ./code/ProcessMemory.C -o ./bin/ProcessMemory.out
+gcc ./code/ProcessTime.C -o ./bin/ProcessTime.out
+gcc ./code/ThreadMemory.C -lpthread -o ./bin/ThreadMemory.out 
+gcc ./code/ThreadTime.C -lpthread -o ./bin/ThreadTime.out
