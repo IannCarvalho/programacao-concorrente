@@ -1,3 +1,5 @@
+package questao2;
+
 class Worker extends Thread {
 	private MyCountDownLatch latch;
 
