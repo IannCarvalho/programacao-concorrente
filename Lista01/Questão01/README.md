@@ -8,3 +8,9 @@ Em sala, discutimos uma implementação de um **lock** justo, em clang. Esse **l
 2. Todas as threads passam por um processo de lock depois de serem criadas, no qual são adicionadas na fila de forma sicronizada e depois verifica-se se a thread que está tentando rodar é a que tá no começo da fila, caso seja, ela roda o código de run, caso não seja ela é colocada em *park*
 
 3. Depois de rodar o código de run, a thread que finalizou seu processo, fará o unlock, o qual remove ela da fila e depois tira o próximo elemento do *park* através do *unpark*
+
+## Como executar
+
+```
+mvn clean compile exec:java
+```

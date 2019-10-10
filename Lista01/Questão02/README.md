@@ -11,3 +11,9 @@ CountDownLatch é um sincronizador disponível na sdk Java (https://docs.oracle.
 2. Worker foi uma classe que representava todas as threads.
 
 3. Todos os Workers possuiam o mesmo latch.
+
+## Como executar
+
+```
+mvn clean compile exec:java
+```
