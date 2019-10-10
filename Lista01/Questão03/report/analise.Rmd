@@ -5,10 +5,10 @@ library(plotly)
 ```
 
 ```{r}
-start = read.csv(("start.csv"), header=FALSE)
+start = read.csv(("../data/start.csv"), header=FALSE)
 colnames(start) <- c("PID","original_number","start")
 
-end = read.csv(("end.csv"), header=FALSE)
+end = read.csv(("../data/end.csv"), header=FALSE)
 colnames(end) <- c("PID","original_number","end")
 
 time = merge(start, end, by=c("PID", "original_number")) %>%
@@ -59,7 +59,7 @@ ggplotly(
 ```
 
 ```{r}
-thread = read.csv(("logThread.csv"), header=FALSE)
+thread = read.csv(("../data/logThread.csv"), header=FALSE)
 colnames(thread) <- c("original_number", "time")
 
 thread = thread %>%
