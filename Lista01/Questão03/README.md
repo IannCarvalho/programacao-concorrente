@@ -44,7 +44,7 @@ Imagem 02 - O consumo de memória de execução das threads
 
 Imagem 03 - O consumo de memória de execução dos processos
 
-Através das imagens acima percebemos que os proccessos usam mais memória do que a threads
+Através das imagens acima percebemos que os proccessos usam mais memória do que a threads, pois a primeira e a última linha depois do comando de `vmstat` são os momentos em que o programa ainda não inicializou e que o progrma terminou, respectivamente
 
 #### Explicando os resultados
 
