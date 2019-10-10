@@ -5,30 +5,40 @@ library(plotly)
 ```
 
 ```{r}
-start = read.csv(("start.csv"), header=FALSE)
+start = read.csv(("../data/start.csv"), header=FALSE)
 colnames(start) <- c("PID","original_number","start")
 
-end = read.csv(("end.csv"), header=FALSE)
+end = read.csv(("../data/end.csv"), header=FALSE)
 colnames(end) <- c("PID","original_number","end")
 
 time = merge(start, end, by=c("PID", "original_number")) %>%
   mutate(time = end-start) %>% 
   select(c("PID","original_number","time"))
 
+time = time %>%
+  mutate(type = "process")
+
+time$PID <- NULL
+
 time
 ```
 
 ```{r}
 ggplotly(
-  ggplot(data=time, aes(x=original_number, y=time)) +
-    geom_line()
-  )
+  ggplot(data=time, aes(x=type, y=time)) +
+    geom_boxplot()
+)
 ```
 
 ```{r}
 time = time %>%
-  filter(time < 5000) %>%
+  filter(time < 261) %>%
   mutate(number = row_number())
+
+ggplotly(
+ggplot(data=time, aes(x=type, y=time)) +
+    geom_boxplot()
+)
 
 time = time %>% 
    mutate(cumulative = cumsum(time))
@@ -49,23 +59,34 @@ ggplotly(
 ```
 
 ```{r}
-thread = read.csv(("logThread.csv"), header=FALSE)
+thread = read.csv(("../data/logThread.csv"), header=FALSE)
 colnames(thread) <- c("original_number", "time")
+
+thread = thread %>%
+  mutate(type = "thread")
 
 thread
 ```
 
 ```{r}
 ggplotly(
-  ggplot(data=thread, aes(x=original_number, y=time)) +
-    geom_line()
+ggplot(data=thread, aes(x=type, y=time)) +
+    geom_boxplot()
 )
 ```
 
 ```{r}
 thread = thread %>%
-  filter(time < 90) %>%
+  filter(time < 21) %>%
   mutate(number = row_number())
+
+thread = thread %>%
+  filter(time > 10)
+
+ggplotly(
+ggplot(data=thread, aes(x=type, y=time)) +
+    geom_boxplot()
+)
 
 ggplotly(
   ggplot(data=thread, aes(x=number, y=time)) +
@@ -93,14 +114,6 @@ ggplotly(
 ```
 
 ```{r}
-thread = thread %>%
-  mutate(type = "thread")
-
-time = time %>%
-  mutate(type = "process")
-
-time$PID <- NULL
-
 final = rbind(thread, time)
 
 final
@@ -113,7 +126,9 @@ ggplot(data=final, aes(x=number, y=time, color = type)) +
 )
 
 ggplotly(
-ggplot(data=final, aes(x=number, y=cumulative, color = type)) +
-  geom_line()
+ggplot(data=final, aes(x=cumulative, y=number, color = type)) +
+  geom_line() +
+  xlab("Tempo (Microsegundos)") +
+  ylab("Número de Processos/Threads")
 )
 ```

@@ -1,4 +1,5 @@
-gcc -o ProcessMemory.out ProcessMemory.C
-gcc -o ProcessTime.out ProcessTime.C
-gcc -lpthread -o ThreadMemory.out ThreadMemory.C
-gcc -lpthread -o ThreadTime.out ThreadTime.C
+mkdir bin
+gcc -o ./bin/ProcessMemory.out ./code/ProcessMemory.C
+gcc -o ./bin/ProcessTime.out ./code/ProcessTime.C
+gcc -lpthread -o ./bin/ThreadMemory.out ./code/ThreadMemory.C
+gcc -lpthread -o ./bin/ThreadTime.out ./code/ThreadTime.C
