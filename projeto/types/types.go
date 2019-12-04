@@ -215,25 +215,26 @@ func (q *QueueSpec) Dispatch() {
 
 func (w *WorkerSpec) Consume(j *JobSpec, freeWorkers chan string, jobsDone chan string) {
 	logrus.Println("Worker", w.ID, "is working on job", j.ID)
-	j.State = "RUNNING"
 	time.Sleep(100 * time.Millisecond)
-	tasks := j.Tasks
-	for m, task := range tasks {
-		for n, command := range task.Commands {
-			if command.State == "QUEUED" {
-				command.State = "RUNNING"
-				time.Sleep(10 * time.Second)
-				command.State = "FINISHED"
-				command.ExitCode = 0
-			}
-			task.Commands[n] = command
-		}
-		tasks[m] = task
-	}
-	j.Tasks = tasks
-	j.State = "FINISHED"
+	// j.State = "RUNNING"
+	// tasks := j.Tasks
+	// for m, task := range tasks {
+	// 	for n, command := range task.Commands {
+	// 		if command.State == "QUEUED" {
+	// 			command.State = "RUNNING"
+	// 			time.Sleep(100 * time.Millisecond)
+	// 			command.State = "FINISHED"
+	// 			command.ExitCode = 0
+	// 		}
+	// 		task.Commands[n] = command
+	// 	}
+	// 	tasks[m] = task
+	// }
+	// j.Tasks = tasks
+	// j.State = "FINISHED"
 	freeWorkers <- w.ID.String()
 	jobsDone <- j.ID.String()
+	logrus.Println("Worker", w.ID, "became idle")
 }
 
 func TryAllocating(idleWorkers map[string]WorkerSpec, pendingJobs map[string]JobSpec) []Allocation {
