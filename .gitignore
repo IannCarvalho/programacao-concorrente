@@ -1,2 +1,2 @@
-*.out
-*.Rhistory
+node_modules/
+arrebol
