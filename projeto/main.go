@@ -96,9 +96,7 @@ func CreateWorker(w http.ResponseWriter, r *http.Request) {
 	newWorker.ID = id
 
 	json.Unmarshal(reqBody, &newWorker)
-	queue.Workers[newID.ID] = newWorker
-
-	queue.FreeWorkers <- newID.ID
+	queue.IdleWorkers[newID.ID] = newWorker
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newID)
@@ -115,7 +113,7 @@ func ListWorkers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	workers := TransformWorkers(queue.Workers)
+	workers := TransformWorkers(MergeWorkers(queue.IdleWorkers, queue.BusyWorkers))
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(workers)
 }
@@ -133,7 +131,7 @@ func DeleteWorker(w http.ResponseWriter, r *http.Request) {
 	}
 
 	workerID := vars["worker_id"]
-	_, ok := queue.Workers[workerID]
+	_, ok := queue.IdleWorkers[workerID]
 
 	if !ok {
 		w.WriteHeader(http.StatusNotFound)
@@ -142,7 +140,7 @@ func DeleteWorker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	delete(queue.Workers, workerID)
+	delete(queue.IdleWorkers, workerID)
 
 	w.WriteHeader(http.StatusNoContent)
 	json.NewEncoder(w).Encode("")
@@ -174,8 +172,12 @@ func CreateJob(w http.ResponseWriter, r *http.Request) {
 
 	json.Unmarshal(reqBody, &newJob)
 	job := TransformInputJob(newJob)
-	queue.ToDoJobs[newID.ID] = job
-	queue.JobsPending <- newID.ID
+
+	queue.ArrivedLock.Lock()
+	queue.JobsArrived[newID.ID] = job
+	queue.ArrivedLock.Unlock()
+
+	queue.NotifyNewJob <- newID.ID
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newID)

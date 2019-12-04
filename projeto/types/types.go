@@ -1,8 +1,12 @@
 package types
 
-import uuid "github.com/satori/go.uuid"
-import logrus "github.com/sirupsen/logrus"
-import "time"
+import (
+	uuid "github.com/satori/go.uuid"
+	logrus "github.com/sirupsen/logrus"
+	"math"
+	"sync"
+	"time"
+)
 
 // UUIDString is used in return in the http response
 type UUIDString struct {
@@ -17,6 +21,7 @@ type QueueSpec struct {
 	WorkerPools int       `json:"worker_pools"`
 	PoolsSize   int       `json:"pools_size"`
 
+	ArrivedLock  sync.Mutex
 	JobsArrived  map[string]JobSpec
 	JobsWaiting  map[string]JobSpec
 	JobsRunning  map[string]JobSpec
@@ -160,6 +165,7 @@ func (q *QueueSpec) Init() {
 
 	q.NotifyNewJob = make(chan string, 100)
 	q.NotifyWorkerIsIdle = make(chan string, 100)
+	q.Helper = make(chan string, 100)
 	q.Killed = make(chan bool, 1)
 }
 
@@ -191,9 +197,11 @@ func (q *QueueSpec) Dispatch() {
 				Allocate(q, matches)
 
 			case jobID := <-q.NotifyNewJob:
-				// MOVE NEW TO TODO
+				// MOVE NEW TO WAITING
+				q.ArrivedLock.Lock()
 				job := q.JobsArrived[jobID]
 				delete(q.JobsArrived, jobID)
+				q.ArrivedLock.Unlock()
 				q.JobsWaiting[jobID] = job
 
 				// TRY ALLOC (REPEAT)
@@ -208,7 +216,7 @@ func (q *QueueSpec) Dispatch() {
 func (w *WorkerSpec) Consume(j *JobSpec, freeWorkers chan string, jobsDone chan string) {
 	logrus.Println("Worker", w.ID, "is working on job", j.ID)
 	j.State = "RUNNING"
-	time.Sleep(10 * time.Second)
+	time.Sleep(100 * time.Millisecond)
 	tasks := j.Tasks
 	for m, task := range tasks {
 		for n, command := range task.Commands {
@@ -216,26 +224,49 @@ func (w *WorkerSpec) Consume(j *JobSpec, freeWorkers chan string, jobsDone chan 
 				command.State = "RUNNING"
 				time.Sleep(10 * time.Second)
 				command.State = "FINISHED"
-				j.Tasks[m].Commands[n].ExitCode = 0
+				command.ExitCode = 0
 			}
+			task.Commands[n] = command
 		}
+		tasks[m] = task
 	}
 	j.Tasks = tasks
 	j.State = "FINISHED"
-	// delete(q.DoingJobs, j.ID.String())
-	// q.DoneJobs[j.ID.String()] = j
 	freeWorkers <- w.ID.String()
 	jobsDone <- j.ID.String()
-	logrus.Println("Worker", w.ID, "finished working on job", j.ID)
 }
 
 func TryAllocating(idleWorkers map[string]WorkerSpec, pendingJobs map[string]JobSpec) []Allocation {
 	allocations := make([]Allocation, 0)
-	for _, worker := range idleWorkers {
-		for _, job := range pendingJobs {
-			aux := Allocation{worker, job}
-			allocations = append(allocations, aux)
+
+	v := int(math.Min(float64(len(idleWorkers)), float64(len(pendingJobs))))
+
+	workerKeys := make([]string, 0, v)
+	i := 0
+	for k := range idleWorkers {
+		if i >= v {
+			break
 		}
+		workerKeys = append(workerKeys, k)
+		i++
+	}
+
+	jobKeys := make([]string, 0, v)
+	j := 0
+	for k := range pendingJobs {
+		if j >= v {
+			break
+		}
+		jobKeys = append(jobKeys, k)
+		j++
+	}
+
+	for i := 0; i < v; i++ {
+		worker := idleWorkers[workerKeys[i]]
+		job := pendingJobs[jobKeys[i]]
+		aux := Allocation{worker, job}
+		allocations = append(allocations, aux)
+
 	}
 	return allocations
 }
