@@ -2,12 +2,6 @@
 
 Threads, processos leves. Escreve dois programas em clang. O primeiro, cria N threads e em seguida, executa join para cada um delas. Cada thread deve simplesmente dormir por um tempo (alguns segundos), e em seguida executar thread_exit(0). Faça um segundo programa, equivalente ao anterior, que cria N processos, que dormem por um tempo determinado, e os esperar terminar. Avalie as diferenças de desempenho, tanto em tempo decorrido para executar as operações importantes), quanto no consumo de memória.
 
-## Como fazer build
-
-``` bash
-$ sh build.sh
-```
-
 ## Introdução teórica
 
 ### Como funcionam os processos?
@@ -57,3 +51,9 @@ Através das imagens acima percebemos que os proccessos usam mais memória do qu
 ### Explicando os resultados
 
 Como dito na secção de introdução teórica, fica evidente que o sistema operacional precisará de mais tempo e memória, tendo em vista que, diferente das threads, os processos necessitam de uma maior exclusividade dos recursos. Dessa forma, chegamos a conclusão de que os processos são mais custosos que as threads, apesar de serem mais seguros.
+
+## Como fazer build
+
+``` bash
+$ sh build.sh
+```
