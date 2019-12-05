@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sync"
 
 	. "arrebol/aux"
 	. "arrebol/types"
@@ -14,6 +15,7 @@ import (
 	logrus "github.com/sirupsen/logrus"
 )
 
+var lock sync.Mutex
 var queues = make(map[string]QueueSpec)
 
 func HomeFunc(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +41,9 @@ func CreateQueue(w http.ResponseWriter, r *http.Request) {
 	newQueue.Init()
 	newQueue.MockWorkers()
 	newQueue.Dispatch()
+	lock.Lock()
 	queues[newID.ID] = newQueue
+	lock.Unlock()
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newID)
@@ -175,9 +179,8 @@ func CreateJob(w http.ResponseWriter, r *http.Request) {
 
 	queue.ArrivedLock.Lock()
 	queue.JobsArrived[newID.ID] = job
-	queue.ArrivedLock.Unlock()
-
 	queue.NotifyNewJob <- newID.ID
+	queue.ArrivedLock.Unlock()
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newID)
@@ -239,14 +242,6 @@ func logMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-
-// func main() {
-// 	q := QueueSpec{}
-// 	q.Init()
-// 	q.MockJobs()
-// 	q.Dispatch()
-// 	<-q.Killed
-// }
 
 func main() {
 	router := mux.NewRouter().StrictSlash(true)

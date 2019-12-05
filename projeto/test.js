@@ -26,6 +26,12 @@ axios.post(`${url}/queues`, {
 }).then((response) => {
     const id = response.data.id;
     for (let i = 0; i < 100; i++) {
-        axios.post(`${url}/queues/${id}/jobs`, job);
+        axios.post(`${url}/queues/${id}/jobs`, job).catch(() => {});
     }
+
+    setTimeout(() => {
+        for (let i = 0; i < 500; i++) {
+            axios.post(`${url}/queues/${id}/jobs`, job).catch(() => {});
+        }
+    }, 10000);
 });
